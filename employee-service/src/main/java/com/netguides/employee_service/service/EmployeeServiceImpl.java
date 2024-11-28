@@ -1,11 +1,14 @@
 package com.netguides.employee_service.service;
 
+import com.netguides.employee_service.dto.APIResponseDto;
+import com.netguides.employee_service.dto.DepartmentDto;
 import com.netguides.employee_service.dto.EmployeeDto;
 import com.netguides.employee_service.entity.Employee;
 import com.netguides.employee_service.mapper.EmployeeMapper;
 import com.netguides.employee_service.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService{
 
     private EmployeeRepository employeeRepository;
-
+    private RestTemplate restTemplate;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -25,11 +28,17 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long id) {
+    public APIResponseDto getEmployeeById(Long id) {
 
         Employee employee = employeeRepository.findById(id).get();
 
-        return EmployeeMapper.mapper.mapToEmployeeDto(employee);
+        DepartmentDto departmentDto = restTemplate.getForEntity("http://localhost:8080/api/department/getDepartmentByCode/"+employee.getDepartmentCode(), DepartmentDto.class).getBody();
+
+        APIResponseDto apiResponseDto = new APIResponseDto();
+        apiResponseDto.setEmployeeDto(EmployeeMapper.mapper.mapToEmployeeDto(employee));
+        apiResponseDto.setDepartmentDto(departmentDto);
+
+        return apiResponseDto;
 
     }
 
