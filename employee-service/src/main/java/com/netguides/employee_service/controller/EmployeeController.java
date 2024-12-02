@@ -1,5 +1,6 @@
 package com.netguides.employee_service.controller;
 
+import com.netguides.employee_service.dto.APIResponseDto;
 import com.netguides.employee_service.dto.EmployeeDto;
 import com.netguides.employee_service.service.EmployeeServiceImpl;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/getEmployee/{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id){
+    public ResponseEntity<APIResponseDto> getEmployeeById(@PathVariable Long id){
         return new ResponseEntity<>(employeeService.getEmployeeById(id),HttpStatus.OK);
     }
 
