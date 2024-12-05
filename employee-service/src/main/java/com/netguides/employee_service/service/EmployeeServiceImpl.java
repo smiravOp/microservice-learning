@@ -1,5 +1,7 @@
 package com.netguides.employee_service.service;
 
+import com.netguides.employee_service.dto.APIResponseDto;
+import com.netguides.employee_service.dto.DepartmentDto;
 import com.netguides.employee_service.dto.EmployeeDto;
 import com.netguides.employee_service.entity.Employee;
 import com.netguides.employee_service.mapper.EmployeeMapper;
@@ -14,7 +16,7 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService{
 
     private EmployeeRepository employeeRepository;
-
+    private DepartmentServiceAPI departmentServiceAPI;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -25,11 +27,17 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long id) {
+    public APIResponseDto getEmployeeById(Long id) {
 
         Employee employee = employeeRepository.findById(id).get();
 
-        return EmployeeMapper.mapper.mapToEmployeeDto(employee);
+        DepartmentDto departmentDto = departmentServiceAPI.getDepartmentByCode(employee.getDepartmentCode());
+
+        APIResponseDto apiResponseDto = new APIResponseDto();
+        apiResponseDto.setEmployeeDto(EmployeeMapper.mapper.mapToEmployeeDto(employee));
+        apiResponseDto.setDepartmentDto(departmentDto);
+
+        return apiResponseDto;
 
     }
 
